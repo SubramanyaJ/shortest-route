@@ -1,6 +1,5 @@
->> % Define the commute time data as adjacency matrices for both cases
-% '-' values are represented as 0 (no direct path)
-
+% Define the commute time data as adjacency matrices for both cases
+% Mirror the values along the diagonal to make it an undirected graph
 % During Parish
 commute_parish = [
     0, 4, 3, 5, 6, 6, 0, 14;
@@ -25,43 +24,40 @@ commute_ordinary = [
     9, 5, 7, 6, 6, 2, 0, 0
 ];
 
-% Labels for points
-labels = {"National College", "Ramakrishna Circle", "Tagore Circle", "Bull Temple", ...
-          "NR Colony", "Hanumantha Nagar Ward Office", "Front Gate", "Back Gate"};
+% Point labels
+labels = {"National College", "Ramakrishna Circle", "Tagore Circle", "Bull Temple", "NR Colony", ...
+          "Hanumantha Nagar Ward Office", "Front Gate", "Back Gate"};
 
-% Function to compute and visualize shortest paths
-function visualize_shortest_paths(adj_matrix, labels, case_name)
-    num_nodes = size(adj_matrix, 1);
-    G = graph(adj_matrix, labels, 'upper');
+% Create graphs
+G_parish = graph(commute_parish, labels);
+G_ordinary = graph(commute_ordinary, labels);
 
-    for source = 1:num_nodes
-        for target = 1:num_nodes
-            if source ~= target
-                % Compute shortest path
-                [path, path_len] = shortestpath(G, source, target);
-                
-                % Visualize the graph with the shortest path highlighted
-                figure;
-                p = plot(G, 'EdgeLabel', G.Edges.Weight, 'LineWidth', 1.5, 'NodeFontSize', 10);
-                highlight(p, path, 'EdgeColor', 'r', 'LineWidth', 2.5);
-                title(sprintf('Shortest Path from %s to %s (%s)\nLength: %.2f', ...
-                      labels{source}, labels{target}, case_name, path_len));
-
-                % Save the figure
-                saveas(gcf, sprintf('shortest_path_%s_%s_to_%s.png', case_name, labels{source}, labels{target}));
-                close;
-            end
+% Compute shortest paths and visualize them for During Parish
+for source = 1:length(labels)
+    for target = 1:length(labels)
+        if source ~= target
+            [path, path_length] = shortestpath(G_parish, source, target);
+            figure;
+            plot(G_parish, 'EdgeLabel', G_parish.Edges.Weight, 'LineWidth', 1.5);
+            highlight(pplot(G_parish), path, 'EdgeColor', 'r', 'LineWidth', 2);
+            title(sprintf('Shortest Path: %s to %s (During Parish)', labels{source}, labels{target}));
+            saveas(gcf, sprintf('shortest_path_during_parish_%d_to_%d.png', source, target));
+            close;
         end
     end
 end
 
-% Compute shortest paths for both cases
-visualize_shortest_paths(commute_parish, labels, 'during_parish');
-visualize_shortest_paths(commute_ordinary, labels, 'ordinary_days');
-
- function visualize_shortest_paths(adj_matrix, labels, case_name)
- ↑
-Error: Function definitions are not supported in this context. Functions can only be created as local or nested functions in
-code files.
- 
->> 
+% Compute shortest paths and visualize them for Ordinary Days
+for source = 1:length(labels)
+    for target = 1:length(labels)
+        if source ~= target
+            [path, path_length] = shortestpath(G_ordinary, source, target);
+            figure;
+            plot(G_ordinary, 'EdgeLabel', G_ordinary.Edges.Weight, 'LineWidth', 1.5);
+            highlight(pplot(G_ordinary), path, 'EdgeColor', 'r', 'LineWidth', 2);
+            title(sprintf('Shortest Path: %s to %s (Ordinary Days)', labels{source}, labels{target}));
+            saveas(gcf, sprintf('shortest_path_ordinary_days_%d_to_%d.png', source, target));
+            close;
+        end
+    end
+end
