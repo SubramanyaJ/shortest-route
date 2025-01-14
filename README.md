@@ -1,14 +1,3 @@
-<b>Structure</b><br>
-    ├── data/<br>
-    │   ├── data.docx<br>
-    │   └── data.pdf<br>
-    ├── extra/<br>
-    │   ├── normal.py<br>
-    │   └── parishe.py<br>
-    └── src/<br>
-        ├── parishe.ipynb<br>
-        └── regular.ipynb<br>
-
 Enter this link to use the .ipynb files through Google Colab :
 ```
 https://github.com/SubramanyaJ/shortest-route
